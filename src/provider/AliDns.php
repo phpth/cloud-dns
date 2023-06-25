@@ -249,16 +249,23 @@ class AliDns extends Provider
     }
 
     /**
+     * @param string|null $domain
      * @param string $type
      * @return array
      * @throws DnsException
      */
-    public function addTxtRecord(string $type = self::TXT_ADD_RECORD_TYPE): array
+    public function addTxtRecord(?string $domain = null, string $type = self::TXT_ADD_RECORD_TYPE): array
     {
+        if($domain === null){
+            if(empty($domain)){
+                throw new DnsException("domain can't empty");
+            }
+            $domain = $this->domain;
+        }
         $params = [
             'Action' => 'GetTxtRecordForVerify',
             'Type'=> $type,
-            'DomainName'=> $this->domain,
+            'DomainName'=> $domain,
         ];
         $res = $this->doRequest($params);
         if(!empty($res['Message'])){
