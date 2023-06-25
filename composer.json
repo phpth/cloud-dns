@@ -10,7 +10,7 @@
   ],
   "type": "package",
   "homepage": "https://github.com/phpth/cloud-dns",
-  "license": "Apache-2",
+  "license": "Apache-2.0",
   "minimum-stability": "stable",
   "require": {
     "php": ">=8",
