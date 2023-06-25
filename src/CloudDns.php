@@ -42,7 +42,7 @@ class CloudDns
      * @return AliDns
      * @throws DnsException
      */
-    public static function getDnsOperatorInstance(string $domain, string $keyId, string $keySecret, string $type)
+    public static function getDnsOperatorInstance(string $domain, string $keyId, string $keySecret, string $type = CloudDns::TYPE_ALI_CLOUD_DNS)
     {
         if(empty(self::CLOUD_DNS_PROVIDER[$type])){
             throw new DnsException("not yet support dns operator type: $type");
