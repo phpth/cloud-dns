@@ -250,11 +250,12 @@ class AliDns extends Provider
 
     /**
      * @param string|null $domain
+     * @param string|null $value
      * @param string $type
      * @return array
      * @throws DnsException
      */
-    public function addTxtRecord(?string $domain = null, string $type = self::TXT_ADD_RECORD_TYPE): array
+    public function addTxtRecord(?string $domain = null, ?string $value = null, string $type = self::TXT_ADD_RECORD_TYPE): array
     {
         if($domain === null){
             if(empty($domain)){
@@ -267,6 +268,9 @@ class AliDns extends Provider
             'Type'=> $type,
             'DomainName'=> $domain,
         ];
+        if($value){
+            $params['Value'] = $value;
+        }
         $res = $this->doRequest($params);
         if(!empty($res['Message'])){
             throw new DnsException("update dns record failed, error: {$res['Message']}".(empty($res['Recommend'])?'': ", error doc: {$res['Recommend']}"));
