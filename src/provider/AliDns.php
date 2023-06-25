@@ -88,10 +88,11 @@ class AliDns extends Provider
      * @param int $page
      * @param int $pageSize
      * @param bool|null $enabled
+     * @param array $search
      * @return array
      * @throws DnsException
      */
-    public function getRecordList(int $page = 1, int $pageSize = Provider::DEFAULT_PAGE_SIZE, ?bool $enabled = null): array
+    public function getRecordList(int $page = 1, int $pageSize = Provider::DEFAULT_PAGE_SIZE, ?bool $enabled = null, array $search = []): array
     {
         $params = [
             'Action'=> 'DescribeDomainRecords',
@@ -101,6 +102,9 @@ class AliDns extends Provider
         ];
         if($enabled !== null){
             $params['Status'] = $enabled? 'Enable': 'Disable';
+        }
+        if($search){
+            $params = array_merge($search, $params);
         }
         $res = $this->doRequest($params);
         if(!empty($res['Message'])){
