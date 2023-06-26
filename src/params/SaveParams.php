@@ -51,4 +51,9 @@ class SaveParams
      */
     public string $remark = '';
 
+    /**
+     * @var bool|null 解析记录状态
+     */
+    public ?bool $status = null;
+
 }

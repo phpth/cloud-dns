@@ -88,10 +88,11 @@ class AliDns extends Provider
      * @param int $page
      * @param int $pageSize
      * @param bool|null $enabled
+     * @param array $search
      * @return array
      * @throws DnsException
      */
-    public function getRecordList(int $page = 1, int $pageSize = Provider::DEFAULT_PAGE_SIZE, ?bool $enabled = null): array
+    public function getRecordList(int $page = 1, int $pageSize = Provider::DEFAULT_PAGE_SIZE, ?bool $enabled = null, array $search = []): array
     {
         $params = [
             'Action'=> 'DescribeDomainRecords',
@@ -101,6 +102,9 @@ class AliDns extends Provider
         ];
         if($enabled !== null){
             $params['Status'] = $enabled? 'Enable': 'Disable';
+        }
+        if($search){
+            $params = array_merge($search, $params);
         }
         $res = $this->doRequest($params);
         if(!empty($res['Message'])){
@@ -168,6 +172,9 @@ class AliDns extends Provider
         if($saveObject->remark){
             $this->updateRecordRemark($recordId, $saveObject->remark);
         }
+        if($saveObject->status != null){
+            $this->setRecordStatus($recordId, $saveObject->status);
+        }
         $res = $this->doRequest($params);
         if(!empty($res['Message'])){
             throw new DnsException("update dns record failed, error: {$res['Message']}".(empty($res['Recommend'])?'': ", error doc: {$res['Recommend']}"));
@@ -185,6 +192,26 @@ class AliDns extends Provider
         $params = [
             'Action' => 'DeleteDomainRecord',
             'RecordId'=> $recordId,
+        ];
+        $res = $this->doRequest($params);
+        if(!empty($res['Message'])){
+            throw new DnsException("update dns record failed, error: {$res['Message']}".(empty($res['Recommend'])?'': ", error doc: {$res['Recommend']}"));
+        }
+        return true;
+    }
+
+    /**
+     * @param string $recordId
+     * @param bool $enabled
+     * @return bool
+     * @throws DnsException
+     */
+    public function setRecordStatus(string $recordId, bool $enabled = true): bool
+    {
+        $params = [
+            'Action' => 'SetDomainRecordStatus',
+            'RecordId'=> $recordId,
+            'Status' => $enabled? 'Enable': 'Disable',
         ];
         $res = $this->doRequest($params);
         if(!empty($res['Message'])){
@@ -224,6 +251,9 @@ class AliDns extends Provider
         }
         if($saveObject->remark){
             $this->updateRecordRemark($res['RecordId'], $saveObject->remark);
+        }
+        if($saveObject->status != null){
+            $this->setRecordStatus($res['RecordId'], $saveObject->status);
         }
         return true;
     }
