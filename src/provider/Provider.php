@@ -30,14 +30,18 @@ abstract class Provider
      * @return string
      * @throws DnsException
      */
-    protected function postRequest(string $url, $data, array $header = [], array $options = [], int $connectTimeout = 3000, int $timeout = 60000): string
+    protected function postRequest(string $url, $data, array $header = [], array $options = [], int $connectTimeout = 90, int $timeout = 900): string
     {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connectTimeout);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        if(empty($options[CURLOPT_TIMEOUT]) ){
+            curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        }
+        if(empty($options[CURLOPT_CONNECTTIMEOUT])){
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connectTimeout);
+        }
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         if($header){

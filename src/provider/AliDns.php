@@ -331,7 +331,7 @@ class AliDns extends Provider
         ];
         $data = array_merge($data, $params);
         $data['Signature'] = $this->sign($data);
-        $ret = $this->postRequest($url, http_build_query($data));
+        $ret = $this->postRequest($url, http_build_query($data), [], [], $this->connectTimeout, $this->timeout);
         $res = json_decode($ret, true)?:[];
         if(!$res){
             throw new DnsException("request failed: $ret");
